@@ -3,28 +3,24 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: rymuller <marvin@42.fr>                    +#+  +:+       +#+         #
+#    By: jaleman <jaleman@student.42.us.org>        +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2018/11/21 14:32:09 by rymuller          #+#    #+#              #
-#    Updated: 2018/11/29 17:02:38 by rymuller         ###   ########.fr        #
+#    Created: 2016/11/03 23:46:05 by jaleman           #+#    #+#              #
+#    Updated: 2019/02/18 14:35:42 by rymuller         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = libft.a
+NAME    = libft.a
 
-CFLAGS = -c -Wall -Wextra -Werror
-
-HEADERS = libft.h
-
-SRCS = *.c
-
-OBJECTS = *.o
+CFLAGS	= -c -Wall -Wextra -Werror
 
 all: $(NAME)
 
-$(NAME):
-	gcc $(CFLAGS) $(SRCS) -I $(HEADERS)
-	ar rs $(NAME) $(OBJECTS)
+$(NAME): $(patsubst %.c,%.o,$(wildcard *.c))
+	ar rs $(NAME) $?
+
+%.o: %.c
+	gcc $(CFLAGS) -I includes/ $<
 
 clean:
 	/bin/rm -rf *.o

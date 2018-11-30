@@ -6,7 +6,7 @@
 /*   By: rymuller <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/11/27 12:45:05 by rymuller          #+#    #+#             */
-/*   Updated: 2018/11/27 12:49:03 by rymuller         ###   ########.fr       */
+/*   Updated: 2019/02/18 14:48:39 by rymuller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,12 +14,6 @@
 
 void	ft_putstr(char const *s)
 {
-	size_t	i;
-
 	if (s != NULL)
-	{
-		i = 0;
-		while (s[i])
-			ft_putchar(s[i++]);
-	}
+		write(1, s, ft_strlen(s));
 }

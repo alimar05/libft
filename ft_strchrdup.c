@@ -1,34 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strstr.c                                        :+:      :+:    :+:   */
+/*   ft_strchrdup.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rymuller <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/22 11:35:06 by rymuller          #+#    #+#             */
-/*   Updated: 2018/11/23 20:22:10 by rymuller         ###   ########.fr       */
+/*   Created: 2018/12/11 21:43:20 by rymuller          #+#    #+#             */
+/*   Updated: 2018/12/20 16:54:36 by rymuller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strstr(const char *haystack, const char *needle)
+static size_t	charlen(char const *s, char c)
 {
-	size_t	i;
-	size_t	j;
+	size_t		i;
 
-	i = 0;
-	if (haystack[i] == needle[i] && haystack[i] == '\0')
-		return (&((char *)haystack)[i]);
-	while (haystack[i])
+	if (s != NULL)
 	{
-		j = 0;
-		while (needle[j] && haystack[i + j] &&
-				haystack[i + j] == needle[j])
-			j++;
-		if (!needle[j])
-			return (&((char *)haystack)[i]);
-		i++;
+		i = 0;
+		while (s[i] != '\0' && s[i] != c)
+			i++;
+		return (i);
 	}
-	return (NULL);
+	return (0);
+}
+
+char			*ft_strchrdup(const char *s1, char c)
+{
+	char		*dst;
+	size_t		len;
+
+	len = charlen(s1, c);
+	if (!(dst = (char *)malloc(sizeof(*s1) * (len + 1))))
+		return (NULL);
+	ft_strncpy(dst, s1, len);
+	dst[len] = '\0';
+	return (dst);
 }

@@ -1,34 +1,37 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_strstr.c                                        :+:      :+:    :+:   */
+/*   ft_atoi_shift.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: rymuller <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/11/22 11:35:06 by rymuller          #+#    #+#             */
-/*   Updated: 2018/11/23 20:22:10 by rymuller         ###   ########.fr       */
+/*   Created: 2019/05/03 13:36:27 by rymuller          #+#    #+#             */
+/*   Updated: 2019/05/03 19:19:20 by rymuller         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "libft.h"
 
-char	*ft_strstr(const char *haystack, const char *needle)
+long int		ft_atoi_shift(char **str)
 {
-	size_t	i;
-	size_t	j;
+	size_t		nbr;
+	signed char	sign;
 
-	i = 0;
-	if (haystack[i] == needle[i] && haystack[i] == '\0')
-		return (&((char *)haystack)[i]);
-	while (haystack[i])
+	sign = 1;
+	while (ft_isspace(**str))
+		(*str)++;
+	if ((**str == '+' && *(*str + 1) == '-')
+			|| (**str == '-' && *(*str + 1) == '+'))
+		return (0);
+	if (**str == '+')
+		(*str)++;
+	if (**str == '-')
 	{
-		j = 0;
-		while (needle[j] && haystack[i + j] &&
-				haystack[i + j] == needle[j])
-			j++;
-		if (!needle[j])
-			return (&((char *)haystack)[i]);
-		i++;
+		(*str)++;
+		sign = -1;
 	}
-	return (NULL);
+	nbr = 0;
+	while (ft_isdigit(**str))
+		nbr = nbr * 10 + *(*str)++ - '0';
+	return (sign * nbr);
 }
