@@ -12,27 +12,81 @@
 
 #include "libft.h"
 
-static t_list			*get_list(t_list **alst, int fd)
+static t_gnl			*get_list(t_gnl **alst, int fd)
 {
-	t_list				*temp;
+	t_gnl				*temp;
 
 	temp = *alst;
 	while (temp)
 	{
-		if ((int)temp->content_size == fd)
+		if (temp->fd == fd)
 			return (temp);
 		temp = temp->next;
 	}
-	temp = ft_lstnew("", fd);
-	ft_lstadd(alst, temp);
+	if (!(temp = (t_gnl *)malloc(sizeof(t_gnl))))
+		return (NULL);
+	if (!(temp->content = ft_strdup("")))
+	{
+		free(temp);
+		return (NULL);
+	}
+	else
+		temp->fd = fd;
+	temp->next = *alst;
+	*alst = temp;
 	return (temp);
+}
+
+static void			del_list(t_gnl **alst, int fd)
+{
+	t_gnl				*victim;
+	t_gnl				**buffer;
+
+	buffer = alst;
+	while (*buffer)
+	{
+		if ((*buffer)->fd == fd)
+		{
+			victim = *buffer;
+			*buffer = victim->next;
+			if (victim->content)
+				free(victim->content);
+			free(victim);
+		}
+		else
+			buffer = &((*buffer)->next);
+	}
+}
+
+static char			*join_buff_to_list(t_gnl *list, char *buff, t_gnl **alst, int fd)
+{
+	char				*temp;
+
+	temp = list->content;
+	if (!(list->content = ft_strjoin(temp, buff)))
+		del_list(alst, fd);
+	free(temp);
+	return (list->content);
+}
+
+static char			*copy_tail_to_list(t_gnl *list, t_gnl **alst, int fd)
+{
+	char				*temp;
+
+	if (ft_strchr(list->content, '\n'))
+	{
+		temp = list->content;
+		if (!(list->content = ft_strdup(ft_strchr(temp, '\n') + 1)))
+			del_list(alst, fd);
+		free(temp);
+	}
+	return (list->content);
 }
 
 int						get_next_line(const int fd, char **line)
 {
-	static t_list		*alst;
-	t_list				*list;
-	void				*temp;
+	static t_gnl		*alst;
+	t_gnl				*list;
 	int					num_bytes;
 	char				buff[BUFF_SIZE + 1];
 
@@ -41,17 +95,16 @@ int						get_next_line(const int fd, char **line)
 	while (((num_bytes = read(fd, buff, BUFF_SIZE)) > 0))
 	{
 		buff[num_bytes] = '\0';
-		CHFRJOIN(temp, list->content, buff);
+		CHECK((list->content = join_buff_to_list(list, buff, &alst, fd)));
 		if ((ft_strchr(buff, '\n')))
 			break ;
 	}
-	CHREAD(num_bytes < BUFF_SIZE, ft_strlen(list->content));
-	CHECK((*line = ft_strchrdup(list->content, '\n')));
-	if (ft_strchr(list->content, '\n'))
+	if (num_bytes < BUFF_SIZE && ft_strlen(list->content) == 0)
 	{
-		CHFRESH(temp, list->content, ft_strchr(temp, '\n') + 1);
+		del_list(&alst, fd);
+		return (0);
 	}
-	else
-		ft_strclr(list->content);
+	CHECK((*line = ft_strchrdup(list->content, '\n')));
+	CHECK((list->content = copy_tail_to_list(list, &alst, fd)));
 	return (1);
 }

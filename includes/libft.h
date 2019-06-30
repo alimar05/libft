@@ -24,6 +24,13 @@ typedef struct		s_list
 	struct s_list	*next;
 }					t_list;
 
+typedef struct		s_gnl
+{
+	char			*content;
+	int			fd;
+	struct s_gnl		*next;
+}			t_gnl;
+
 char				*ft_itoa(int n);
 void				ft_putnbr(int n);
 int					ft_tolower(int c);
@@ -90,12 +97,9 @@ char				*ft_strsub(char const *s, unsigned int start, size_t len);
 char				*ft_strnstr(const char *haystack, const char *needle,
 		size_t len);
 
-# define BUFF_SIZE 1024
+# define BUFF_SIZE 32
 # define CHECK(x) if (!x) return (-1)
-# define CHFRESH(x, y, z) x = y; CHECK((y = ft_strdup(z))); free(x)
 # define CHERROR(x, y, z) if (x < 0 || y == NULL || z < 0) return (-1)
-# define CHFRJOIN(x, y, z) x = y; CHECK((y = ft_strjoin(y, z))); free(x)
-# define CHREAD(x, y) if (x && y == 0) return (0)
 
 int					get_next_line(const int fd, char **line);
 
